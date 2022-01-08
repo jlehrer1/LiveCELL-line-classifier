@@ -87,7 +87,7 @@ if __name__ == "__main__":
     valdata = DataLoader(test, batch_size=8, num_workers=8)
 
     trainer = pl.Trainer(
-        gpus=1, 
+        gpus=4, 
         auto_lr_find=True,
         max_epochs=100000, 
     )
