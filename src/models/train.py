@@ -68,6 +68,7 @@ class CellDataset(Dataset):
         img = Image.open(os.path.join(self.images_path, img_path))
         return self.tensor(img), label
 
+
 if __name__ == "__main__":
     here = pathlib.Path(__file__).parent.absolute()
 
@@ -75,6 +76,7 @@ if __name__ == "__main__":
         images_path=os.path.join(here, '..', '..', 'images'),
         label_path=os.path.join(here, '..', '..', 'labels.csv'),
     )
+    
     train_size = int(0.80 * len(dataset))
     test_size = len(dataset) - train_size
     train, test = torch.utils.data.random_split(dataset, [train_size, test_size])
