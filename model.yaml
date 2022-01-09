@@ -19,17 +19,17 @@ spec:
         - name: PYTHONUNBUFFERED
           value: "1"
         args: [
-          
+          "python src/models/train.py"
         ]
         resources:
           limits:
             memory: 100Gi
             cpu: "16"
-            nvidia.com/gpu: "1"
+            nvidia.com/gpu: "8"
           requests:
             memory: 32Gi
             cpu: "12"
-            nvidia.com/gpu: "1"
+            nvidia.com/gpu: "4"
         volumeMounts:
         - name: ephemeral
           mountPath: "/data"

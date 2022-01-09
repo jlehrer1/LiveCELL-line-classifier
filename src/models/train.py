@@ -20,19 +20,16 @@ class Net(pl.LightningModule):
             nn.Conv2d(32,64,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2,2),
-
             nn.Conv2d(64,128,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.Conv2d(128,128,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2,2),
-
             nn.Conv2d(128,256,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.Conv2d(256,256,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2,2),
-
             nn.Flatten(),
             nn.Linear(520*704*4,1024),
             nn.ReLU(),
@@ -70,7 +67,6 @@ class CellDataset(Dataset):
         img_path, label = self.labels.iloc[idx]['filename'], self.labels.iloc[idx]['class']
         img = Image.open(os.path.join(self.images_path, img_path))
         return self.tensor(img), label
-    
 
 if __name__ == "__main__":
     here = pathlib.Path(__file__).parent.absolute()
@@ -83,8 +79,8 @@ if __name__ == "__main__":
     test_size = len(dataset) - train_size
     train, test = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-    traindata = DataLoader(train, batch_size=8, num_workers=8)
-    valdata = DataLoader(test, batch_size=8, num_workers=8)
+    traindata = DataLoader(train, batch_size=8, num_workers=100)
+    valdata = DataLoader(test, batch_size=8, num_workers=100)
 
     trainer = pl.Trainer(
         gpus=4, 
