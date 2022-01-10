@@ -16,4 +16,4 @@ go:
 	make build && make push
 
 train:
-	kubectl create -f model.yaml
+	kubectl create -f run.yaml

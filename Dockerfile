@@ -12,6 +12,6 @@ RUN apt-get --allow-releaseinfo-change update && \
         vim 
 
 RUN conda install --yes boto3 pandas numpy pip plotly scipy 
-RUN pip install pytorch-lightning comet_ml 
+RUN pip install pytorch-lightning comet_ml scikit-learn Pillow
 
 COPY . .
