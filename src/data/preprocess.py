@@ -48,7 +48,7 @@ mapping = {
 here = pathlib.Path(__file__).parent.absolute()
 
 # First, we download the data with the function defined above
-# download_images(here, mapping.keys())
+download_images(here, mapping.keys())
 
 le = preprocessing.LabelEncoder()
 

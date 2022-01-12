@@ -14,6 +14,10 @@ import pathlib
 class Net(pl.LightningModule):
     def __init__(self):
         super(Net, self).__init__()
+        self.lr = 1e-4
+        self.momentum = 1e-2
+        self.weight_decay = 1e-6
+        
         self.stack = nn.Sequential(
             nn.Conv2d(1,32,kernel_size=3,padding=1),
             nn.ReLU(),
@@ -54,6 +58,15 @@ class Net(pl.LightningModule):
         acc = self.accuracy(y_hat.softmax(dim=-1), y)
         return val_loss
 
+    def configure_optimizers(self):
+        optimizer = torch.optim.SGD(
+            self.parameters(),
+            lr=self.lr, 
+            momentum=self.momentum, 
+            weight_decay=self.weight_decay,
+        )
+        return optimizer
+
 class CellDataset(Dataset):
     def __init__(self, images_path, label_path):
         self.images_path = images_path
@@ -85,7 +98,7 @@ if __name__ == "__main__":
     valdata = DataLoader(test, batch_size=8, num_workers=100)
 
     trainer = pl.Trainer(
-        gpus=4, 
+        # gpus=4, 
         auto_lr_find=True,
         max_epochs=100000, 
     )
