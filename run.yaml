@@ -19,17 +19,18 @@ spec:
         - name: PYTHONUNBUFFERED
           value: "1"
         args: [
-            "python src/data/preprocess.py && python src/models/train.py" 
+            # "python src/data/preprocess.py && python src/models/train.py" 
+            "sleep 1000000"
         ]
         resources:
           limits:
             memory: 100Gi
             cpu: "16"
-            nvidia.com/gpu: "4"
+            nvidia.com/gpu: "2"
           requests:
             memory: 32Gi
             cpu: "12"
-            nvidia.com/gpu: "4"
+            nvidia.com/gpu: "2"
         volumeMounts:
         - name: ephemeral
           mountPath: "/data"

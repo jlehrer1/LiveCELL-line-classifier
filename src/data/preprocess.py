@@ -25,14 +25,15 @@ def download_images(here, labels):
 
     # Get list of objects in the bucket, taking the string after the 8th index removes the 'jlehrer/livecell' at the beginning
     objs = [f.key[16 + 1:] for f in s3.Bucket('braingeneersdev').objects.filter(Prefix="jlehrer/livecell")]
-    
     # Now we download the objects into the correct folder 
     print('Downloading files from S3')
     for file in objs:
+        print(f'Downloading {file}')
         s3.Bucket('braingeneersdev').download_file(
-            Key=file,
+            Key=os.path.join('jlehrer', 'livecell', file),
             Filename=os.path.join(here, '..', '..', 'images', file),
         )
+    print('Finished downloading files from S3')
 
 mapping = {
     "A172": "Glioblastoma",
@@ -47,10 +48,11 @@ mapping = {
 here = pathlib.Path(__file__).parent.absolute()
 
 # First, we download the data with the function defined above
-download_images(here, mapping.keys())
+# download_images(here, mapping.keys())
 
 le = preprocessing.LabelEncoder()
 
+print('Generating label file for cell lineage classification')
 # Generate the labels dataframe
 df = pd.DataFrame(columns=['label'])
 df.index.name = 'filename'
