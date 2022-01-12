@@ -19,8 +19,8 @@ spec:
         - name: PYTHONUNBUFFERED
           value: "1"
         args: [
-            # "python src/data/preprocess.py && python src/models/train.py" 
-            "sleep 1000000"
+            "python src/data/preprocess.py && python src/models/lineage_classification.py" 
+            # "sleep 1000000"
         ]
         resources:
           limits:

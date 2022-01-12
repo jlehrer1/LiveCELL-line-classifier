@@ -17,7 +17,7 @@ class Net(pl.LightningModule):
         self.lr = 1e-4
         self.momentum = 1e-2
         self.weight_decay = 1e-6
-        
+
         self.stack = nn.Sequential(
             nn.Conv2d(1,32,kernel_size=3,padding=1),
             nn.ReLU(),
@@ -87,18 +87,18 @@ if __name__ == "__main__":
 
     dataset = CellDataset(
         images_path=os.path.join(here, '..', '..', 'images'),
-        label_path=os.path.join(here, '..', '..', 'labels.csv'),
+        label_path=os.path.join(here, '..', '..', 'labels', 'labels.csv'),
     )
     
     train_size = int(0.80 * len(dataset))
     test_size = len(dataset) - train_size
     train, test = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-    traindata = DataLoader(train, batch_size=8, num_workers=100)
-    valdata = DataLoader(test, batch_size=8, num_workers=100)
+    traindata = DataLoader(train, batch_size=4, num_workers=32)
+    valdata = DataLoader(test, batch_size=4, num_workers=32)
 
     trainer = pl.Trainer(
-        # gpus=4, 
+        # gpus=2, 
         auto_lr_find=True,
         max_epochs=100000, 
     )

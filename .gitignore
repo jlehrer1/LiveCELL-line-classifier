@@ -1,3 +1,5 @@
 images/*
 .DS_Store
 credentials
+lightning_logs/
+labels/livecell_coco*
