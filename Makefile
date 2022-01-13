@@ -17,3 +17,6 @@ go:
 
 train:
 	kubectl create -f run.yaml
+
+stop:
+	kubectl delete job livecell-cnn

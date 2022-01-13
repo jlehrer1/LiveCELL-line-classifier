@@ -29,22 +29,30 @@ class Net(pl.LightningModule):
             nn.Conv2d(32,64,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2,2),
-            # nn.Conv2d(64,128,kernel_size=3,stride=1,padding=1),
-            # nn.ReLU(),
-            # nn.Conv2d(128,128,kernel_size=3,stride=1,padding=1),
-            # nn.ReLU(),
-            # nn.MaxPool2d(2,2),
-            # nn.Conv2d(128,256,kernel_size=3,stride=1,padding=1),
-            # nn.ReLU(),
-            # nn.Conv2d(256,256,kernel_size=3,stride=1,padding=1),
-            # nn.ReLU(),
-            # nn.MaxPool2d(2,2),
+
+            nn.Conv2d(64,128,kernel_size=3,stride=1,padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128,128,kernel_size=3,stride=1,padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2,2),
+            nn.Conv2d(128,256,kernel_size=3,stride=1,padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256,256,kernel_size=3,stride=1,padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2,2),
+
+            nn.Conv2d(256,128,kernel_size=3,stride=1,padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128,64,kernel_size=3,stride=1,padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2,2),
+
             nn.Flatten(),
-            # nn.Linear(520*704*4,1024),
-            # nn.ReLU(),
-            # nn.Linear(1024,512),
-            # nn.ReLU(),
-            # nn.Linear(512,7)
+            nn.Linear(128*704,1024),
+            nn.ReLU(),
+            nn.Linear(1024,512),
+            nn.ReLU(),
+            nn.Linear(512,7)
         )
         
     def forward(self, x):
@@ -85,15 +93,15 @@ if __name__ == "__main__":
     test_size = len(dataset) - train_size
     train, test = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-    traindata = DataLoader(train, batch_size=4, num_workers=32)
-    valdata = DataLoader(test, batch_size=4, num_workers=32)
+    traindata = DataLoader(train, batch_size=1, num_workers=32)
+    valdata = DataLoader(test, batch_size=1, num_workers=32)
 
     trainer = pl.Trainer(
         gpus=2, 
+        strategy="ddp",
         auto_lr_find=True,
         max_epochs=100000, 
     )
 
     model = Net()
     trainer.fit(model, traindata, valdata)
-
