@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: livecell-cnn
+  name: livecell-cnn-2
 spec:
   backoffLimit: 5
   completions: 1

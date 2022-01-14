@@ -3,3 +3,4 @@ images/*
 credentials
 lightning_logs/
 labels/livecell_coco*
+__pycache__/*

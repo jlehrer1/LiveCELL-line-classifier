@@ -1,9 +1,12 @@
+from asyncio.log import logger
+import comet_ml 
 import pandas as pd 
 import numpy as np 
 import torch
 import os 
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
+from pytorch_lightning.loggers import CometLogger
 from PIL import Image
 import pytorch_lightning as pl
 import torch.nn.functional as F
@@ -24,12 +27,14 @@ class Net(pl.LightningModule):
         self.accuracy = Accuracy()
 
         self.stack = nn.Sequential(
+            # up
             nn.Conv2d(1,32,kernel_size=3,padding=1),
             nn.ReLU(),
             nn.Conv2d(32,64,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2,2),
 
+            # more up!
             nn.Conv2d(64,128,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.Conv2d(128,128,kernel_size=3,stride=1,padding=1),
@@ -41,12 +46,14 @@ class Net(pl.LightningModule):
             nn.ReLU(),
             nn.MaxPool2d(2,2),
 
+            # down
             nn.Conv2d(256,128,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.Conv2d(128,64,kernel_size=3,stride=1,padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2,2),
 
+            # linear and classification layers (dont need softmax, computed in gradient calculation)
             nn.Flatten(),
             nn.Linear(128*704,1024),
             nn.ReLU(),
@@ -63,6 +70,7 @@ class Net(pl.LightningModule):
         y_hat = self.forward(x)
         loss = F.cross_entropy(y_hat, y)
         acc = self.accuracy(y_hat.softmax(dim=-1), y)
+        self.log("train_accuracy", acc, logger=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -70,6 +78,7 @@ class Net(pl.LightningModule):
         y_hat = self.forward(x)
         val_loss = F.cross_entropy(y_hat, y)
         acc = self.accuracy(y_hat.softmax(dim=-1), y)
+        self.log("val_accuracy", acc, logger=True)
         return val_loss
 
     def configure_optimizers(self):
@@ -80,28 +89,3 @@ class Net(pl.LightningModule):
             weight_decay=self.weight_decay,
         )
         return optimizer
-
-if __name__ == "__main__":
-    here = pathlib.Path(__file__).parent.absolute()
-
-    dataset = CellDataset(
-        images_path=os.path.join(here, '..', '..', 'images'),
-        label_path=os.path.join(here, '..', '..', 'labels', 'labels.csv'),
-    )
-    
-    train_size = int(0.80 * len(dataset))
-    test_size = len(dataset) - train_size
-    train, test = torch.utils.data.random_split(dataset, [train_size, test_size])
-
-    traindata = DataLoader(train, batch_size=1, num_workers=32)
-    valdata = DataLoader(test, batch_size=1, num_workers=32)
-
-    trainer = pl.Trainer(
-        gpus=2, 
-        strategy="ddp",
-        auto_lr_find=True,
-        max_epochs=100000, 
-    )
-
-    model = Net()
-    trainer.fit(model, traindata, valdata)
