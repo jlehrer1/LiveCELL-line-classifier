@@ -88,4 +88,5 @@ class Net(pl.LightningModule):
             momentum=self.momentum, 
             weight_decay=self.weight_decay,
         )
+        
         return optimizer
