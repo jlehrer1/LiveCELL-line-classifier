@@ -45,6 +45,7 @@ mapping = {
     "SkBr3": "Adenocarcinoma",
     "SKOV3": "Adenocarcinoma"
 }
+
 here = pathlib.Path(__file__).parent.absolute()
 
 # First, we download the data with the function defined above
